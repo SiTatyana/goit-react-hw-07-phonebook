@@ -1,8 +1,8 @@
 import { nanoid } from 'nanoid';
 import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { addContact } from 'redux/contactsSlice';
-import { getContacts } from 'redux/selectors';
+import { addContact } from 'redux/operations';
+import { getItems } from 'redux/selectors';
 import {PhonebookForm, PhonebookHeader, PhonebookLabel, PhonebookInput, PhonebookButton}from './Form.styled'
 
 
@@ -13,9 +13,9 @@ const numberInputId = nanoid()
 const Form = () => {
 
   const [name, setName] = useState('');
-  const [number, setNumber] = useState('');
+  const [phone, setPhone] = useState('');
 
-  const contacts = useSelector(getContacts);
+  const items = useSelector(getItems);
   const dispatch = useDispatch();
 
   const handleInputChange = (e) => {
@@ -23,7 +23,7 @@ const Form = () => {
     
     switch(name) {
       case "number":
-        return setNumber(value); 
+        return setPhone(value); 
       case "name":
         return setName(value); 
       default:
@@ -33,14 +33,14 @@ const Form = () => {
 
   
   const chekingContacts = () => {
-    const findContact = contacts.find((contact) => contact.name === name);
-    const findNumber = contacts.find((contact) => contact.number === number);
+    const findContact = items.find((item) => item.name === name);
+    const findNumber = items.find((item) => item.phone === phone);
 
     if (findContact) { 
       alert(`${name} is already in contacts`);      
     } 
       else if (findNumber) { 
-      alert(`${number} is already in contacts`);      
+      alert(`${phone} is already in contacts`);      
     }             
   };
 
@@ -48,10 +48,12 @@ const Form = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     chekingContacts()
-    dispatch(addContact(name, number));
+    dispatch(addContact({name, phone}));
     setName('');
-    setNumber('');
+    setPhone('');
       };
+
+
 
 
   return(
@@ -78,7 +80,7 @@ const Form = () => {
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
             required
             onChange={handleInputChange}
-            value={number}  
+            value={phone}  
             id={numberInputId}            
           />  
         </PhonebookLabel>
